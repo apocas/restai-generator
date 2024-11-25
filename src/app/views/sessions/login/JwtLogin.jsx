@@ -78,7 +78,7 @@ export default function JwtLogin() {
         .then((response) => {
           setLoading(false);
           if (response && response.sso) {
-            Cookies.set('restai_redirect', window.location.href);
+            Cookies.set('restai_redirect', window.location.href.split('/').slice(0,4).join('/'));
             window.location.href = response.sso;
           } else {
             setType("password");
