@@ -7,6 +7,8 @@ import useAuth from "app/hooks/useAuth";
 import { Paragraph, Span } from "app/components/Typography";
 import { toast } from 'react-toastify';
 
+import Cookies from 'js-cookie';
+
 const FlexBox = styled(Box)(() => ({
   display: "flex"
 }));
@@ -76,6 +78,7 @@ export default function JwtLogin() {
         .then((response) => {
           setLoading(false);
           if (response && response.sso) {
+            Cookies.set('restai_redirect', window.location.href);
             window.location.href = response.sso;
           } else {
             setType("password");
