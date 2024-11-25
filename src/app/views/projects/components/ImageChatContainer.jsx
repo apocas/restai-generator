@@ -170,7 +170,7 @@ export default function ImageChatContainer({
           <Fragment>
             <ChatAvatar src={opponentUser.avatar} />
             <UserName>
-              {GENERATOR}
+              {GENERATOR.toUpperCase()}
             </UserName>
           </Fragment>
         </Box>
@@ -196,7 +196,7 @@ export default function ImageChatContainer({
           <MessageBox>
             <ImageEmptyMessage />
             <p>Write an image idea...</p>
-            <p>(This isn't a chat/agent, there is no memory/conversation)</p>
+            <p>(There is no memory of previous messages)</p>
           </MessageBox>
         )}
 

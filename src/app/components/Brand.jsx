@@ -27,7 +27,7 @@ export default function Brand({ children }) {
       <Box display="flex" alignItems="center">
         <MatxLogo />
         <StyledSpan mode={mode} className="sidenavHoverShow">
-          {process.env.REACT_APP_RESTAI_NAME || "RESTai"}
+          {process.env.REACT_APP_RESTAI_NAME || "RESTai"}{process.env.REACT_APP_RESTAI_SLOGAN || ""}
         </StyledSpan>
       </Box>
 
