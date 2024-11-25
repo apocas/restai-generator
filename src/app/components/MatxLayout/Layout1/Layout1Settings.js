@@ -1,7 +1,7 @@
 const Layout1Settings = {
   leftSidebar: {
-    show: true,
-    mode: "full",
+    show: false,
+    mode: "close",
     theme: "slateDark1",
     bgImgURL: ""
   },

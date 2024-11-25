@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { Link } from "react-router-dom";
 import {
   Box,
   styled,
@@ -7,7 +6,6 @@ import {
   Hidden,
   useTheme,
   MenuItem,
-  IconButton,
   useMediaQuery
 } from "@mui/material";
 
@@ -21,17 +19,11 @@ import { themeShadows } from "app/components/MatxTheme/themeColors";
 import { topBarHeight } from "app/utils/constant";
 
 import sha256 from 'crypto-js/sha256';
+import Brand from "app/components/Brand";
 
 import {
-  Home,
-  Menu,
-  Person,
   PowerSettingsNew
 } from "@mui/icons-material";
-
-const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  color: theme.palette.text.primary
-}));
 
 const TopbarRoot = styled("div")({
   top: 0,
@@ -102,9 +94,8 @@ const Layout1Topbar = () => {
     <TopbarRoot>
       <TopbarContainer>
         <Box display="flex">
-          <StyledIconButton onClick={handleSidebarToggle}>
-            <Menu />
-          </StyledIconButton>
+        <Brand>
+        </Brand>
         </Box>
 
         <Box display="flex" alignItems="center">
@@ -119,19 +110,6 @@ const Layout1Topbar = () => {
                 <Avatar src={"http://www.gravatar.com/avatar/" + sha256(user.username)} sx={{ cursor: "pointer" }} />
               </UserMenu>
             }>
-            <StyledItem>
-              <Link to="/">
-                <Home />
-                <Span>Home</Span>
-              </Link>
-            </StyledItem>
-
-            <StyledItem>
-              <Link to={"/user/" + user.username}>
-                <Person />
-                <Span>Profile</Span>
-              </Link>
-            </StyledItem>
 
             <StyledItem onClick={logout}>
               <PowerSettingsNew />

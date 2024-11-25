@@ -8,7 +8,7 @@ const BrandRoot = styled(Box)(() => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "20px 18px 20px 29px"
+  padding: "20px 18px 20px 0px"
 }));
 
 const StyledSpan = styled(Span)(({ mode }) => ({

@@ -1,5 +1,5 @@
 import { Box, Divider, Fab, IconButton, MenuItem, styled, TextField, CircularProgress } from "@mui/material";
-import { Delete, MoreVert, Send, CloudUpload } from "@mui/icons-material";
+import { Delete, MoreVert, Send } from "@mui/icons-material";
 import { Fragment, useState } from "react";
 import Scrollbar from "react-perfect-scrollbar";
 import shortid from "shortid";
@@ -17,8 +17,6 @@ import sha256 from 'crypto-js/sha256';
 import CustomizedDialogMessage from "./CustomizedDialogMessage";
 import CustomizedDialogImage from "./CustomizedDialogImage";
 import { toast } from 'react-toastify';
-
-const HiddenInput = styled("input")({ display: "none" });
 
 const ChatRoot = styled(Box)(() => ({
   height: 800,
@@ -76,11 +74,12 @@ export default function ImageChatContainer({
   generators,
   opponentUser = {
     name: "A.I.",
-    avatar: "/admin/assets/images/painter.jpg"
+    avatar: "/summit/assets/images/painter.jpg"
   }
 }) {
   const url = process.env.REACT_APP_RESTAI_API_URL || "";
   const auth = useAuth();
+  const GENERATOR = process.env.REACT_APP_RESTAI_GENERATOR || "dalle";
 
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -88,8 +87,6 @@ export default function ImageChatContainer({
   const [scroll, setScroll] = useState();
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [image, setImage] = useState(null);
-  const [state, setState] = useState({});
 
   const handleMessageSend = (message) => {
     handler(message);
@@ -100,17 +97,10 @@ export default function ImageChatContainer({
       "prompt": prompt
     };
 
-    if (image && image.includes("base64,")) {
-      body.image = image.split(",")[1];
-    } else if (image) {
-      body.image = image;
-    }
-
-
     if (canSubmit) {
       setCanSubmit(false);
-      setMessages([...messages, { id: body.id, prompt: prompt + " (" + state.generator + ")", answer: null, sources: [] }]);
-      fetch(url + "/image/" + state.generator + "/generate", {
+      setMessages([...messages, { id: body.id, prompt: prompt + " (" + GENERATOR + ")", answer: null, sources: [] }]);
+      fetch(url + "/image/" + GENERATOR + "/generate", {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json', 'Authorization': 'Basic ' + auth.user.token }),
         body: JSON.stringify(body),
@@ -127,7 +117,7 @@ export default function ImageChatContainer({
         })
         .then((response) => {
           if (!response.prompt) {
-            response.prompt = prompt + " (" + state.generator + ")";
+            response.prompt = prompt + " (" + GENERATOR + ")";
           }
           setMessages([...messages, response]);
           setCanSubmit(true);
@@ -163,31 +153,6 @@ export default function ImageChatContainer({
     }
   };
 
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
-
-  const handleFileSelect = async (event) => {
-    if (event.target.files.length === 1) {
-      let file = event.target.files[0];
-      const base64 = await convertToBase64(file);
-      setImage(base64);
-    }
-  };
-
-  const handleChange = (event) => {
-    if (event && event.persist) event.persist();
-    setState({ ...state, [event.target.name]: event.target.value });
-  };
 
   useEffect(() => {
     if (scroll) {
@@ -205,41 +170,7 @@ export default function ImageChatContainer({
           <Fragment>
             <ChatAvatar src={opponentUser.avatar} />
             <UserName>
-              <TextField
-                select
-                size="small"
-                name="generator"
-                label="Generator"
-                variant="outlined"
-                onChange={handleChange}
-                //sx={{ minWidth: 188}}
-                sx={{
-                  minWidth: 188,
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    border: "2px solid white"
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": {
-                      border: "2px solid white"
-                    }
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "white"
-                  },
-                  "& .MuiSelect-select": {
-                    color: "white"
-                  },
-                  "& .MuiSelect-icon": {
-                    color: "white"
-                  }
-                }}
-              >
-                {generators.map((item, ind) => (
-                  <MenuItem value={item} key={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </TextField>
+              {GENERATOR}
             </UserName>
           </Fragment>
         </Box>
@@ -325,27 +256,6 @@ export default function ImageChatContainer({
         />
 
         <div style={{ display: "flex" }}>
-          {image !== null && (
-            <Box
-              component="img"
-              sx={{
-                height: 56,
-              }}
-              alt="Image preview"
-              src={image}
-              onClick={() => handleClickImage(image)}
-            />
-          )}
-          <Fragment>
-            <label htmlFor="upload-single-file">
-              <Fab
-                color="primary"
-                sx={{ ml: 2 }} component="span">
-                <CloudUpload />
-              </Fab>
-            </label>
-            <HiddenInput onChange={handleFileSelect} id="upload-single-file" type="file" />
-          </Fragment>
           <Fab
             onClick={() => {
               if (message.trim() !== "") handleMessageSend(message);
