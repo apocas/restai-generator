@@ -1,1 +1,2 @@
-# restai-generator
+# restai-frontend
+RESTai's Frontend
